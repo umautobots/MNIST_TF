@@ -24,6 +24,7 @@ $ python3 main.py
 ```
 $ tensorboard --logdir=./logs
 ```
+and TensorBoard will be availabel at `0.0.0.0:6006`
 
 # Run with [NVIDIA Docker](https://github.com/NVIDIA/nvidia-docker) (recommended)
 
@@ -39,3 +40,4 @@ $ ./train.sh
 ```
 $ ./tensorboard.sh 6006
 ```
+and TensorBoard will be availabel at `0.0.0.0:6006`
