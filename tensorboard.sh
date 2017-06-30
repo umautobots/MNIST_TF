@@ -1,5 +1,5 @@
 nvidia-docker run -it --rm \
   -v `pwd`/logs:/logs:ro \
-  -p $1:6006 \
+  -p $1:$1 \
   tensorflow/tensorflow:1.2.1-devel-gpu-py3 \
-  tensorboard --logdir=/logs
+  tensorboard --logdir=/logs --port=$1

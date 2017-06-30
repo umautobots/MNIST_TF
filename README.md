@@ -22,7 +22,7 @@ $ python3 main.py
 
 ## To visualize the training/test loss, run
 ```
-$ tensorboard --logdir=./logs
+$ tensorboard --logdir=logs
 ```
 and TensorBoard will be availabel at `0.0.0.0:6006`
 
@@ -33,11 +33,11 @@ and TensorBoard will be availabel at `0.0.0.0:6006`
 
 ## To start training, run
 ```
-$ ./train.sh
+$ . train.sh
 ```
 
 ## To visualize the training/test loss, run
 ```
-$ ./tensorboard.sh 6006
+$ . tensorboard.sh 6006
 ```
 and TensorBoard will be availabel at `0.0.0.0:6006`
