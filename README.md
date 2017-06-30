@@ -32,10 +32,10 @@ $ tensorboard --logdir=./logs
 
 ## To start training, run
 ```
-$ ./docker_train.sh
+$ ./train.sh
 ```
 
 ## To visualize the training/test loss, run
 ```
-$ ./docker_tensorboard.sh 6006
+$ ./tensorboard.sh 6006
 ```
