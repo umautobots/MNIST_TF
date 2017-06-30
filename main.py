@@ -2,7 +2,7 @@ import tensorflow as tf
 import os
 from tensorflow.examples.tutorials.mnist import input_data
 from util import build_model
-from datetime import datetime
+from time import time
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
@@ -46,17 +46,22 @@ config = tf.ConfigProto(gpu_options=tf.GPUOptions(allow_growth=True))
 with tf.Session(config=config) as sess:
     sess.run(tf.global_variables_initializer())
 
-    log_dir = './logs/{:s}'.format(str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+    log_dir = './logs/{:d}'.format(int(time()))
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
 
     writer = tf.summary.FileWriter(log_dir, sess.graph)
 
+    t0 = time()
     for step in range(num_steps):
         if step % (num_steps // 100) == 0 or step == num_steps - 1:
             a_test, s_test, s_weights = sess.run([accu_test, sum_test, sum_weights],
                                                  feed_dict={x: mnist.test.images, y: mnist.test.labels})
-            print('[{:6d}/{:6d}] Test accuracy: {:.4f}'.format(step, num_steps, a_test))
+            t = time() - t0
+            m, s = divmod(t, 60)
+            h, m = divmod(m, 60)
+            print('[{:6d}/{:6d}] Time: [{:02d}:{:02d}:{:02d}], Test accuracy: {:.4f}'.format(
+                  step, num_steps, int(h), int(m), int(s), a_test))
             writer.add_summary(s_test, step)
             writer.add_summary(s_weights, step)
 
