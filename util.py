@@ -18,8 +18,9 @@ def build_model(image, label, training=True):
     with tf.variable_scope('loss'):
         loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=x))
 
-    predictions = tf.argmax(x, axis=-1, name='predictions')
-    correct_predictions = tf.equal(predictions, tf.argmax(y, -1))
-    accuracy = tf.reduce_mean(tf.cast(correct_predictions, tf.float32), name='accuracy')
+    with tf.variable_scope('benchmark'):
+        predictions = tf.argmax(x, axis=-1, name='predictions')
+        correct_predictions = tf.equal(predictions, tf.argmax(y, -1))
+        accuracy = tf.reduce_mean(tf.cast(correct_predictions, tf.float32), name='accuracy')
 
     return accuracy, loss
