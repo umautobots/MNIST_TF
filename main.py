@@ -17,14 +17,15 @@ with tf.variable_scope('model'):
 with tf.variable_scope('model', reuse=True):
     accu_test, loss_test = build_model(x, y, training=False)
 
-# Decreasing learing rate
-lr = tf.Variable(2e-3, trainable=False, name='learning_rate')
-lr_update = tf.assign(lr, 0.5 * lr)
+with tf.variable_scope('optimizer'):
+    # Decreasing learing rate
+    lr = tf.Variable(2e-3, trainable=False, name='learning_rate')
+    lr_update = tf.assign(lr, 0.5 * lr)
 
-# Update the moving average/variance in batch normalization layers
-update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
-with tf.control_dependencies(update_ops):
-    optim = tf.train.AdamOptimizer(learning_rate=lr).minimize(loss_train)
+    # Update the moving average/variance in batch normalization layers
+    update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+    with tf.control_dependencies(update_ops):
+        optim = tf.train.AdamOptimizer(learning_rate=lr).minimize(loss_train)
 
 # Summaries
 sum_lr = tf.summary.scalar('misc/learning_rate', lr)
