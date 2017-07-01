@@ -38,6 +38,6 @@ $ . train.sh
 
 ## To visualize the training/test loss, run
 ```
-$ . tensorboard.sh 6006
+$ . tensorboard.sh
 ```
 and TensorBoard will be availabel at `0.0.0.0:6006`

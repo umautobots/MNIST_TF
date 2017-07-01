@@ -1,5 +1,11 @@
+if [ -z $1 ] ; then
+  PORT=6006
+else
+  PORT=$1
+fi
+
 nvidia-docker run -it --rm \
   -v `pwd`/logs:/logs:ro \
-  -p $1:$1 \
+  -p $PORT:$PORT \
   tensorflow/tensorflow:1.2.1-devel-gpu-py3 \
-  tensorboard --logdir=/logs --port=$1
+  tensorboard --logdir=/logs --port=$PORT
