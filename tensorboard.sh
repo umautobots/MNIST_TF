@@ -5,7 +5,7 @@ else
 fi
 
 nvidia-docker run -it --rm \
-  -v `pwd`/logs:/logs:ro \
+  -v $PWD/logs:/logs:ro \
   -p $PORT:$PORT \
   tensorflow/tensorflow:latest-devel-gpu-py3 \
   tensorboard --logdir=/logs --port=$PORT

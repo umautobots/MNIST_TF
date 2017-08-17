@@ -3,6 +3,7 @@ import tensorflow as tf
 def build_model(image, label, training=True):
     with tf.variable_scope('reshape'):
         x = tf.reshape(image, [-1, 28, 28, 1])
+        x = 2 * x - 1
         y = tf.reshape(label, [-1, 1, 1, 10])
 
     for k in range(3):
