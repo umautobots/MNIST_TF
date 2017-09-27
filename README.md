@@ -11,9 +11,7 @@ This implementation achieves an accuracy of ~99.4% after 10k steps.
 
 ## Dependencies
 - Python >= 3.5.2
-- CUDA 8
-- CUDNN 5.1
-- TensorFlow >= 1.0.0
+- TensorFlow >= 1.0.0 with GPU support
 
 ## To start training, run
 ```
