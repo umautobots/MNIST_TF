@@ -31,11 +31,11 @@ and TensorBoard will be availabel at `0.0.0.0:6006`
 
 ## To start training, run
 ```
-$ bash train.sh
+$ ./train.sh
 ```
 
 ## To visualize the training/test loss, run
 ```
-$ bash tensorboard.sh
+$ ./tensorboard.sh
 ```
 and TensorBoard will be availabel at `0.0.0.0:6006`

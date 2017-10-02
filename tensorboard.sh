@@ -1,3 +1,4 @@
+#! /bin/bash
 if [ -z $1 ] ; then
   PORT=6006
 else

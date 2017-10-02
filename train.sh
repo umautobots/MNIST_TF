@@ -1,3 +1,4 @@
+#! /bin/bash
 nvidia-docker run -it --rm \
   -v $PWD:/root/MNIST_TF \
   -w /root/MNIST_TF \
