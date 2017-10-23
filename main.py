@@ -18,7 +18,7 @@ with tf.variable_scope('model', reuse=True):
     accu_test, loss_test = build_model(x, y, training=False)
 
 with tf.variable_scope('optimizer'):
-    # Decreasing learing rate
+    # Decreasing learning rate
     lr = tf.Variable(2e-3, trainable=False, name='learning_rate')
     lr_update = tf.assign(lr, 0.5 * lr)
 
