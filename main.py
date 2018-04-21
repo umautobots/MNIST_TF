@@ -1,31 +1,58 @@
-import tensorflow as tf
 import os
-from tensorflow.examples.tutorials.mnist import input_data
-from util import build_model
 from time import time
+import argparse
+import numpy as np
+import tensorflow as tf
+import util
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
-mnist = input_data.read_data_sets('./data', one_hot=True)
+parser = argparse.ArgumentParser()
 
-x = tf.placeholder(tf.float32, [None, 28**2], name='images')
-y = tf.placeholder(tf.float32, [None, 10], name='labels')
+parser.add_argument('--num_steps',
+                    help='Number of training steps. (default: 10000)',
+                    type=int, default=10000)
+parser.add_argument('--batch_size',
+                    help='Batch size in each training step. (default: 256)',
+                    type=int, default=256)
+parser.add_argument('--gpu',
+                    help='Which GPU to use. (default: 0)',
+                    type=str, default='0')
+parser.add_argument('--lr',
+                    help='Learning rate. (default: 2e-3)',
+                    type=float, default=2e-3)
+parser.add_argument('--print_step',
+                    help='Number of steps for printing info. (default: 100)',
+                    type=int, default=100)
+
+args = parser.parse_args()
+
+os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
+
+with tf.variable_scope('input/train'):
+    _, ds_train = util.load_dataset('data', 'train')
+    ds_train = ds_train.shuffle(10000).repeat().batch(args.batch_size)
+    x_train, y_train = ds_train.make_one_shot_iterator().get_next()
+
+with tf.variable_scope('input/test'):
+    num_test, ds_test = util.load_dataset('data', 'test')
+    ds_test = ds_test.repeat().batch(num_test)
+    x_test, y_test = ds_test.make_one_shot_iterator().get_next()
 
 with tf.variable_scope('model'):
-    accu_train, loss_train = build_model(x, y)
+    accu_train, loss_train = util.build_model(x_train, y_train)
 
 with tf.variable_scope('model', reuse=True):
-    accu_test, loss_test = build_model(x, y, training=False)
+    accu_test, loss_test = util.build_model(x_test, y_test, training=False)
 
 with tf.variable_scope('optimizer'):
     # Decreasing learning rate
-    lr = tf.Variable(2e-3, trainable=False, name='learning_rate')
+    lr = tf.Variable(args.lr, trainable=False, name='learning_rate')
     lr_update = tf.assign(lr, 0.5 * lr)
 
     # Update the moving average/variance in batch normalization layers
     update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
     with tf.control_dependencies(update_ops):
-        optim = tf.train.AdamOptimizer(learning_rate=lr).minimize(loss_train)
+        train_op = tf.train.AdamOptimizer(lr).minimize(loss_train)
 
 # Summaries
 sum_lr = tf.summary.scalar('misc/learning_rate', lr)
@@ -38,10 +65,8 @@ sum_accu_test = tf.summary.scalar('test/accuracy', accu_test)
 sum_loss_test = tf.summary.scalar('test/loss', loss_test)
 sum_test = tf.summary.merge([sum_accu_test, sum_loss_test])
 
-sum_weights = tf.summary.merge([tf.summary.histogram(var.name, var) for var in tf.trainable_variables()])
-
-batch_size = 500
-num_steps = 10000
+vars = tf.trainable_variables()
+sum_weights = tf.summary.merge([tf.summary.histogram(v.name, v) for v in vars])
 
 config = tf.ConfigProto(gpu_options=tf.GPUOptions(allow_growth=True))
 with tf.Session(config=config) as sess:
@@ -54,23 +79,20 @@ with tf.Session(config=config) as sess:
     writer = tf.summary.FileWriter(log_dir, sess.graph)
 
     t0 = time()
-    for step in range(num_steps):
-        if step % (num_steps // 100) == 0 or step == num_steps - 1:
-            a_test, s_test, s_weights = sess.run([accu_test, sum_test, sum_weights],
-                                                 feed_dict={x: mnist.test.images, y: mnist.test.labels})
+    for step in range(args.num_steps):
+        if step % (args.num_steps // args.print_step) == 0 or step == args.num_steps - 1:
+            a_test, s_test, s_weights = sess.run([accu_test, sum_test, sum_weights])
             t = time() - t0
             m, s = divmod(t, 60)
             h, m = divmod(m, 60)
             print('[{:6d}/{:6d}] Time: [{:02d}:{:02d}:{:02d}], Test accuracy: {:.4f}'.format(
-                  step, num_steps, int(h), int(m), int(s), a_test))
+                  step, args.num_steps, int(h), int(m), int(s), a_test))
             writer.add_summary(s_test, step)
             writer.add_summary(s_weights, step)
 
-        img, lbl = mnist.train.next_batch(batch_size)
-        _, s_train, s_lr = sess.run([optim, sum_train, sum_lr],
-                                    feed_dict={x: img, y: lbl})
+        _, s_train, s_lr = sess.run([train_op, sum_train, sum_lr])
         writer.add_summary(s_train, step)
         writer.add_summary(s_lr, step)
 
-        if (step + 1) % (num_steps // 4) == 0:
+        if (step + 1) % (args.num_steps // 4) == 0:
             sess.run(lr_update)

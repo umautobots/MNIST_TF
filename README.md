@@ -2,7 +2,8 @@
 
 Here we have code for
 - visualizing loss, accuracy, and the graph using TensorBoard
-- constructing a network with high level functions in `tf.layers`
+- loading the dataset using `tf.data` API
+- constructing a network with high level APIs in `tf.layers`
 - implementing decreasing learning rate
 
 This implementation achieves an accuracy of ~99.4% after 10k steps.
