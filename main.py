@@ -1,7 +1,6 @@
 import os
 from time import time
 import argparse
-import numpy as np
 import tensorflow as tf
 import util
 
@@ -29,14 +28,19 @@ args = parser.parse_args()
 os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
 
 with tf.variable_scope('input/train'):
-    _, ds_train = util.load_dataset('data', 'train')
-    ds_train = ds_train.shuffle(10000).repeat().batch(args.batch_size)
-    x_train, y_train = ds_train.make_one_shot_iterator().get_next()
+    _, ds = util.load_dataset('data', 'train')
+    ds = ds.shuffle(10000).repeat()
+    ds = ds.map(util.preprocess, num_parallel_calls=64).batch(args.batch_size)
+    ds = ds.prefetch(10)
+    x_train, y_train = ds.make_one_shot_iterator().get_next()
+    print(x_train.shape, y_train.shape)
 
 with tf.variable_scope('input/test'):
-    num_test, ds_test = util.load_dataset('data', 'test')
-    ds_test = ds_test.repeat().batch(num_test)
-    x_test, y_test = ds_test.make_one_shot_iterator().get_next()
+    num_test, ds = util.load_dataset('data', 'test')
+    ds = ds.repeat()
+    ds = ds.map(util.preprocess, num_parallel_calls=64).batch(num_test)
+    ds = ds.prefetch(10)
+    x_test, y_test = ds.make_one_shot_iterator().get_next()
 
 with tf.variable_scope('model'):
     accu_train, loss_train = util.build_model(x_train, y_train)
@@ -50,6 +54,7 @@ with tf.variable_scope('optimizer'):
     lr_update = tf.assign(lr, 0.5 * lr)
 
     # Update the moving average/variance in batch normalization layers
+    # https://www.tensorflow.org/api_docs/python/tf/layers/batch_normalization
     update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
     with tf.control_dependencies(update_ops):
         train_op = tf.train.AdamOptimizer(lr).minimize(loss_train)
@@ -80,7 +85,7 @@ with tf.Session(config=config) as sess:
 
     t0 = time()
     for step in range(args.num_steps):
-        if step % (args.num_steps // args.print_step) == 0 or step == args.num_steps - 1:
+        if step % args.print_step == 0 or step == args.num_steps - 1:
             a_test, s_test, s_weights = sess.run([accu_test, sum_test, sum_weights])
             t = time() - t0
             m, s = divmod(t, 60)

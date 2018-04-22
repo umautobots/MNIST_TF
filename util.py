@@ -3,14 +3,7 @@ import numpy as np
 import tensorflow as tf
 
 
-def build_model(images, labels, training=True):
-    with tf.variable_scope('reshape'):
-        x = tf.reshape(images, [-1, 28, 28, 1])
-        x = tf.cast(x, tf.float32) / 127.5 - 1
-
-        y = tf.squeeze(labels)
-        y = tf.cast(y, tf.int64)
-
+def build_model(x, y, training=True):
     for k in range(3):
         with tf.variable_scope('layer{:d}'.format(k + 1)):
             x = tf.layers.conv2d(x, 2**k * 64, 3,
@@ -35,6 +28,16 @@ def build_model(images, labels, training=True):
                                   name='accuracy')
 
     return accuracy, loss
+
+
+def preprocess(image, label):
+    x = tf.reshape(image, [28, 28, 1])
+    x = tf.cast(x, tf.float32) / 127.5 - 1
+
+    y = tf.squeeze(label)
+    y = tf.cast(y, tf.int64)
+
+    return x, y
 
 
 def load_dataset(data_dir, dataset):
