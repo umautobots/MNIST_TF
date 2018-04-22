@@ -20,9 +20,10 @@ def build_model(images, labels, training=True):
             x = tf.nn.relu(x)
             x = tf.layers.dropout(x, training=training)
 
-    # This is equivalent to a fully connnected layer
-    x = tf.layers.conv2d(x, 10, x.shape[1:3])
-    x = tf.squeeze(x, name='logits')
+    with tf.variable_scope('logits'):
+        numel = np.prod(x.shape.as_list()[1:])
+        x = tf.reshape(x, [-1, numel])
+        x = tf.layers.dense(x, 10)
 
     loss = tf.losses.sparse_softmax_cross_entropy(labels=y, logits=x,
                                                   scope='loss')
@@ -46,13 +47,10 @@ def load_dataset(data_dir, dataset):
     else:
         raise ValueError('Unrecognized set `{}`'.format(dataset))
 
-    fn_img = os.path.join(data_dir, fn_img)
-    fn_lbl = os.path.join(data_dir, fn_lbl)
-
-    raw_img = np.fromfile(fn_img, dtype=np.uint8)
-    raw_lbl = np.fromfile(fn_lbl, dtype=np.uint8)
-
+    raw_img = np.fromfile(os.path.join(data_dir, fn_img), dtype=np.uint8)
     num_img = np.sum(raw_img[4:8] * 256**np.arange(3, -1, -1))
+
+    raw_lbl = np.fromfile(os.path.join(data_dir, fn_lbl), dtype=np.uint8)
     num_lbl = np.sum(raw_lbl[4:8] * 256**np.arange(3, -1, -1))
 
     assert num_img == num_lbl

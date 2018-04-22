@@ -6,7 +6,7 @@ Here we have code for
 - constructing a network with high level APIs in `tf.layers`
 - implementing decreasing learning rate
 
-This implementation achieves an accuracy of ~99.4% after 10k steps.
+This implementation achieves an accuracy of ~99.3% after 10k steps.
 
 # Run on regular environments (e.g. Ubuntu 16.04)
 
