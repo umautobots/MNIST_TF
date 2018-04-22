@@ -11,8 +11,8 @@ parser.add_argument('--num_steps',
                     help='Number of training steps. (default: 10000)',
                     type=int, default=10000)
 parser.add_argument('--batch_size',
-                    help='Batch size in each training step. (default: 256)',
-                    type=int, default=256)
+                    help='Batch size in each training step. (default: 1024)',
+                    type=int, default=1024)
 parser.add_argument('--gpu',
                     help='Which GPU to use. (default: 0)',
                     type=str, default='0')
@@ -33,7 +33,6 @@ with tf.variable_scope('input/train'):
     ds = ds.map(util.preprocess, num_parallel_calls=64).batch(args.batch_size)
     ds = ds.prefetch(10)
     x_train, y_train = ds.make_one_shot_iterator().get_next()
-    print(x_train.shape, y_train.shape)
 
 with tf.variable_scope('input/test'):
     num_test, ds = util.load_dataset('data', 'test')
