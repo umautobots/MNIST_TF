@@ -7,7 +7,6 @@ fi
 
 nvidia-docker run -it --rm \
   -v $PWD/logs:/logs:ro \
-  -v /mnt:/mnt:ro \
   -p $PORT:$PORT \
-  tensorflow/tensorflow:latest-devel-gpu-py3 \
+  tensorflow/tensorflow:1.13.1-gpu-py3 \
   tensorboard --logdir=/logs --port=$PORT
