@@ -2,9 +2,15 @@
 import os
 from datetime import datetime
 import argparse
-from tensorflow.keras import datasets, optimizers
+import tensorflow as tf
+from tensorflow.keras import datasets, optimizers, backend
 from tensorflow.keras.callbacks import TensorBoard
 import util
+
+
+gpu_options = tf.GPUOptions(allow_growth=True)
+sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
+backend.set_session(sess)
 
 
 parser = argparse.ArgumentParser()
@@ -45,7 +51,7 @@ model.compile(
 
 now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 tb = TensorBoard(
-    log_dir=f'./logs/{now}',
+    log_dir='./logs/{:s}'.format(now),
     update_freq='batch',
     histogram_freq=1
 )
@@ -55,9 +61,7 @@ model.fit(
     epochs=args.num_epochs,
     batch_size=args.batch_size,
     validation_data=(x_test, y_test),
-    validation_split=0.1,
     callbacks=[tb]
 )
 
-print('\nEvaluating ...')
-model.evaluate(x_test, y_test)
+sess.close()

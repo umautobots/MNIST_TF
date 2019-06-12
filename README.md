@@ -3,7 +3,7 @@
 # Run on regular environments (e.g. Ubuntu 16.04)
 
 ## Dependencies
-- Python >= 3.6
+- Python >= 3.5
 - TensorFlow >= 1.13.1 with GPU support
 
 ## To start training, run
