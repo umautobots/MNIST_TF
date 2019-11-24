@@ -7,17 +7,19 @@ else
 fi
 
 mkdir -p $HOME/.keras
+WORKDIR=/mnist_tf
 
 docker run -it --rm \
   --gpus='"device='$GPU'"' \
   --name='mnist-gpu'$GPU \
   -u $(id -u):$(id -g) \
   -e HOME=$HOME \
-  -v $PWD:$HOME/mnist_tf \
   -v $HOME/.keras:$HOME/.keras \
-  -v /tmp/mnist_pycache:$HOME/mnist_tf/__pycache__ \
+  -v $PWD/main.py:$WORKDIR/main.py:ro \
+  -v $PWD/util.py:$WORKDIR/util.py:ro \
+  -v $PWD/logs:$WORKDIR/logs \
   -v /etc/timezone:/etc/timezone:ro \
   -v /etc/localtime:/etc/localtime:ro \
-  -w $HOME/mnist_tf \
+  -w $WORKDIR \
   tensorflow/tensorflow:2.0.0-gpu-py3 \
   python3 main.py
