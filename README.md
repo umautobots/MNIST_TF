@@ -8,7 +8,7 @@
 
 ## To start training, run
 ```
-$ export CUDA_VISIBLE_DEVICES=0
+$ export CUDA_VISIBLE_DEVICES=0   # use GPU0 (optional)
 $ python3 main.py
 ```
 
@@ -16,7 +16,7 @@ $ python3 main.py
 ```
 $ tensorboard --logdir=logs
 ```
-and TensorBoard will be availabel at `localhost:6006`
+and TensorBoard will be available at `localhost:6006`
 
 # Run with [NVIDIA Docker](https://github.com/NVIDIA/nvidia-docker) (recommended)
 
@@ -33,4 +33,4 @@ $ ./train.sh 2  # train on GPU2
 ```
 $ ./tensorboard.sh
 ```
-and TensorBoard will be availabel at `localhost:6006`
+and TensorBoard will be available at `localhost:6006`

@@ -8,5 +8,7 @@ fi
 docker run -it --rm \
   -v $PWD/logs:/logs:ro \
   -p $PORT:$PORT \
+  -v /etc/timezone:/etc/timezone:ro \
+  -v /etc/localtime:/etc/localtime:ro \
   tensorflow/tensorflow:2.0.0-gpu-py3 \
-  tensorboard --logdir=/logs --port=$PORT
+  tensorboard --logdir=/logs --port=$PORT --bind_all
