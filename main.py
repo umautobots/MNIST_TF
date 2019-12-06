@@ -43,15 +43,18 @@ else:
 x_train = 0.5 * (x_train - 127.5)
 x_test = 0.5 * (x_test - 127.5)
 
-model = util.build_model()
+strategy = tf.distribute.MirroredStrategy()
+
+with strategy.scope():
+    model = util.build_model()
+
+    model.compile(
+        optimizer=keras.optimizers.Adam(lr=args.lr),
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy']
+    )
 
 model.summary()
-
-model.compile(
-    optimizer=keras.optimizers.Adam(lr=args.lr),
-    loss='sparse_categorical_crossentropy',
-    metrics=['accuracy']
-)
 
 now = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
 tb_callback = keras.callbacks.TensorBoard(

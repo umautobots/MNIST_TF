@@ -11,7 +11,7 @@ WORKDIR=/mnist_tf
 
 docker run -it --rm \
   --gpus='"device='$GPU'"' \
-  --name='mnist-gpu'$GPU \
+  --name='mnist-gpu-'$GPU \
   -u $(id -u):$(id -g) \
   -e HOME=$HOME \
   -v $HOME/.keras:$HOME/.keras \
