@@ -18,6 +18,7 @@ docker run -it --rm \
   -v $PWD/main.py:$WORKDIR/main.py:ro \
   -v $PWD/util.py:$WORKDIR/util.py:ro \
   -v $PWD/logs:$WORKDIR/logs \
+  -v $PWD/checkpoints:$WORKDIR/checkpoints \
   -v /etc/timezone:/etc/timezone:ro \
   -v /etc/localtime:/etc/localtime:ro \
   -w $WORKDIR \
