@@ -2,7 +2,7 @@
 from datetime import datetime
 import argparse
 import numpy as np
-from tensorflow import keras
+import tensorflow as tf
 import util
 
 
@@ -19,9 +19,9 @@ parser.add_argument('--fashion', dest='fashion', action='store_true')
 args = parser.parse_args()
 
 if args.fashion:
-    mnist = keras.datasets.fashion_mnist
+    mnist = tf.keras.datasets.fashion_mnist
 else:
-    mnist = keras.datasets.mnist
+    mnist = tf.keras.datasets.mnist
 
 (x, y), _ = mnist.load_data()
 
@@ -35,23 +35,26 @@ x_val, y_val = x[~idx_train], y[~idx_train]
 
 util.allow_gpu_memory_growth()
 
-model = util.build_model()
+strategy = tf.distribute.MirroredStrategy()
+with strategy.scope():
+    model = util.build_model()
+    model.compile(
+        optimizer=tf.keras.optimizers.Adam(lr=args.lr),
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy']
+    )
+
 model.summary()
-model.compile(
-    optimizer=keras.optimizers.Adam(lr=args.lr),
-    loss='sparse_categorical_crossentropy',
-    metrics=['accuracy']
-)
 
 # TensorBoard
 now = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
-tb_callback = keras.callbacks.TensorBoard(
+tb_callback = tf.keras.callbacks.TensorBoard(
    log_dir=f'./logs/{now:s}',
    histogram_freq=1
 )
 
 # Checkpoint
-cp_callback = keras.callbacks.ModelCheckpoint(
+cp_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath=f'./checkpoints/{now:s}/cp.ckpt',
     save_weights_only=True,
     verbose=1
