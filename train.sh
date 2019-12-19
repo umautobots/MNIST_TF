@@ -15,7 +15,7 @@ docker run -it --rm \
   -u $(id -u):$(id -g) \
   -e HOME=$HOME \
   -v $HOME/.keras:$HOME/.keras \
-  -v $PWD/main.py:$WORKDIR/main.py:ro \
+  -v $PWD/train.py:$WORKDIR/train.py:ro \
   -v $PWD/util.py:$WORKDIR/util.py:ro \
   -v $PWD/logs:$WORKDIR/logs \
   -v $PWD/checkpoints:$WORKDIR/checkpoints \

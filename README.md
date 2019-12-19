@@ -10,7 +10,7 @@
 
 ```
 $ export CUDA_VISIBLE_DEVICES=0   # use GPU0 (optional)
-$ python3 main.py
+$ python3 train.py
 ```
 
 ## To visualize the training/test loss, run
