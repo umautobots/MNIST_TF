@@ -22,5 +22,5 @@ docker run -it --rm \
   -v /etc/timezone:/etc/timezone:ro \
   -v /etc/localtime:/etc/localtime:ro \
   -w $WORKDIR \
-  tensorflow/tensorflow:2.0.0-gpu-py3 \
+  tensorflow/tensorflow:2.1.0-gpu-py3 \
   python3 train.py

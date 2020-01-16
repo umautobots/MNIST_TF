@@ -4,7 +4,7 @@
 
 ## Dependencies
 - Python >= 3.6
-- TensorFlow >= 2.0.0 with GPU support
+- TensorFlow >= 2.1.0 with GPU support
 
 ## To start training, run
 

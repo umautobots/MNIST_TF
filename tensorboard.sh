@@ -10,5 +10,5 @@ docker run -it --rm \
   -p $PORT:$PORT \
   -v /etc/timezone:/etc/timezone:ro \
   -v /etc/localtime:/etc/localtime:ro \
-  tensorflow/tensorflow:2.0.0-gpu-py3 \
+  tensorflow/tensorflow:2.1.0-gpu-py3 \
   tensorboard --logdir=/logs --port=$PORT --bind_all

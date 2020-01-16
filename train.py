@@ -46,6 +46,12 @@ with strategy.scope():
 
 model.summary()
 
+for layer in model.layers:
+    if 'conv2d' in layer.name:
+        weights = layer.get_weights()
+        for w in weights:
+            print(f'Name: {layer.name}, shape: {w.shape}')
+
 # TensorBoard
 now = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
 tb_callback = tf.keras.callbacks.TensorBoard(
