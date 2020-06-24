@@ -1,9 +1,9 @@
-#! /usr/bin/python3
+#! /usr/bin/env python3
 import os
 from glob import glob
 import argparse
 from tensorflow import keras
-import util
+import utils
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--idx_ckpt', type=int, default=-1,
@@ -11,7 +11,7 @@ parser.add_argument('--idx_ckpt', type=int, default=-1,
 parser.add_argument('--fashion', dest='fashion', action='store_true')
 args = parser.parse_args()
 
-checkpoints = sorted(glob('checkpoints/*'))
+checkpoints = sorted(glob('logs/*'))
 if len(checkpoints):
     [print(f'{idx}: {ckpt}') for idx, ckpt in enumerate(checkpoints)]
 else:
@@ -24,9 +24,9 @@ else:
 
 _, (x_test, y_test) = mnist.load_data()
 
-util.allow_gpu_memory_growth()
+utils.allow_gpu_memory_growth()
 
-model = util.build_model()
+model = utils.build_model()
 model.compile(
     loss='sparse_categorical_crossentropy',
     metrics=['accuracy']

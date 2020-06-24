@@ -1,9 +1,9 @@
-#! /usr/bin/python3
+#! /usr/bin/env python3
 from datetime import datetime
 import argparse
 import numpy as np
 import tensorflow as tf
-import util
+import utils
 
 
 parser = argparse.ArgumentParser()
@@ -33,11 +33,11 @@ np.random.shuffle(idx_train)
 x_train, y_train = x[idx_train], y[idx_train]
 x_val, y_val = x[~idx_train], y[~idx_train]
 
-util.allow_gpu_memory_growth()
+utils.allow_gpu_memory_growth()
 
 strategy = tf.distribute.MirroredStrategy()
 with strategy.scope():
-    model = util.build_model()
+    model = utils.build_model()
     model.compile(
         optimizer=tf.keras.optimizers.Adam(lr=args.lr),
         loss='sparse_categorical_crossentropy',
@@ -61,7 +61,7 @@ tb_callback = tf.keras.callbacks.TensorBoard(
 
 # Checkpoint
 cp_callback = tf.keras.callbacks.ModelCheckpoint(
-    filepath=f'./checkpoints/{now:s}/cp.ckpt',
+    filepath=f'./logs/{now:s}/cp.ckpt',
     save_weights_only=True,
     verbose=1
 )

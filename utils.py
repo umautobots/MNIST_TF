@@ -10,7 +10,7 @@ def build_model():
         x = layers.Conv2D(2**k * 64, kernel_size=3, strides=2, use_bias=False, padding='same')(x)
         x = layers.BatchNormalization(scale=False)(x)
         x = layers.Activation('relu')(x)
-        x = layers.Dropout(0.5)(x)
+        x = layers.SpatialDropout2D(0.5)(x)
 
     x = layers.Flatten()(x)
     _out = layers.Dense(10, activation='softmax')(x)
