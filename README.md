@@ -5,7 +5,7 @@
 ## Dependencies
 - NVIDIA driver >= 418
 - Python >= 3.6
-- TensorFlow >= 2.2.0 with GPU support (CUDA 10.1 & cuDNN 7)
+- TensorFlow >= 2.3.0 with GPU support (CUDA 10.1 & cuDNN 7)
 
 After installing [CUDA 10.1](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html) and [cuDNN 7](https://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html), run the following commands to install TensorFlow:
 
