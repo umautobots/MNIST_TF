@@ -8,6 +8,7 @@ import utils
 parser = argparse.ArgumentParser()
 parser.add_argument('--idx_ckpt', type=int, default=-1,
                     help='Index of the checkpoint to load. (default: -1)')
+parser.add_argument('--fft', dest='fft', action='store_true')
 parser.add_argument('--fashion', dest='fashion', action='store_true')
 args = parser.parse_args()
 
@@ -26,7 +27,7 @@ _, (x_test, y_test) = mnist.load_data()
 
 utils.allow_gpu_memory_growth()
 
-model = utils.build_model()
+model = utils.build_model(fft=args.fft)
 model.compile(
     loss='sparse_categorical_crossentropy',
     metrics=['accuracy']

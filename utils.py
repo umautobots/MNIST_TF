@@ -2,10 +2,17 @@ import tensorflow as tf
 from tensorflow.keras import Model, layers
 
 
-def build_model():
+def build_model(fft=False):
     _in = layers.Input(shape=(28, 28))
     x = 0.5 * (_in - 127.5)
-    x = layers.Reshape((28, 28, 1))(x)
+
+    if fft:
+        x = tf.signal.rfft(x)
+        x = tf.stack([tf.math.real(x), tf.math.imag(x)], axis=-1)
+        x = tf.reshape(x, [-1, 28, 30, 1]) / 28
+    else:
+        x = tf.reshape(x, [-1, 28, 28, 1])
+
     for k in range(3):
         x = layers.Conv2D(2**k * 64, kernel_size=3, strides=2, use_bias=False, padding='same')(x)
         x = layers.BatchNormalization(scale=False)(x)

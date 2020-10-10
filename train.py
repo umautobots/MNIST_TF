@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+import os
 from datetime import datetime
 import argparse
 import numpy as np
@@ -15,6 +16,9 @@ parser.add_argument('--lr', type=float, default=1e-3,
                     help='Learning rate. (default: 1e-3)')
 parser.add_argument('--train_ratio', type=float, default=0.75,
                     help='Fraction of data for training. (default: 0.75)')
+parser.add_argument('--tag', type=str, default='',
+                    help='Tag')
+parser.add_argument('--fft', dest='fft', action='store_true')
 parser.add_argument('--fashion', dest='fashion', action='store_true')
 args = parser.parse_args()
 
@@ -37,7 +41,7 @@ utils.allow_gpu_memory_growth()
 
 strategy = tf.distribute.MirroredStrategy()
 with strategy.scope():
-    model = utils.build_model()
+    model = utils.build_model(fft=args.fft)
     model.compile(
         optimizer=tf.keras.optimizers.Adam(lr=args.lr),
         loss='sparse_categorical_crossentropy',
@@ -52,16 +56,21 @@ for layer in model.layers:
         for w in weights:
             print(f'Name: {layer.name}, shape: {w.shape}')
 
+if len(args.tag):
+    log_dir = f'./logs/{args.tag:s}'
+else:
+    now = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
+    log_dir = f'./logs/{now:s}'
+
 # TensorBoard
-now = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
 tb_callback = tf.keras.callbacks.TensorBoard(
-   log_dir=f'./logs/{now:s}',
+   log_dir=log_dir,
    histogram_freq=1
 )
 
 # Checkpoint
 cp_callback = tf.keras.callbacks.ModelCheckpoint(
-    filepath=f'./logs/{now:s}/cp.ckpt',
+    filepath=os.path.join(log_dir, 'cp.ckpt'),
     save_weights_only=True,
     verbose=1
 )
