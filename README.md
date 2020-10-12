@@ -36,6 +36,12 @@ and TensorBoard will be available at `localhost:6006`
 - NVIDIA driver >= 418
 - NVIDIA Docker
 
+## Build the latest image
+
+```
+$ ./docker/build.sh
+```
+
 ## Launch a container
 
 ```
