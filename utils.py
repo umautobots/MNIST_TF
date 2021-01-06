@@ -2,16 +2,16 @@ import tensorflow as tf
 from tensorflow.keras import Model, layers
 
 
-def build_model(fft=False):
-    _in = layers.Input(shape=(28, 28))
+def build_model(h=28, w=28, fft=False):
+    _in = layers.Input(shape=(h, w))
     x = 0.5 * (_in - 127.5)
 
     if fft:
         x = tf.signal.rfft(x)
         x = tf.stack([tf.math.real(x), tf.math.imag(x)], axis=-1)
-        x = tf.reshape(x, [-1, 28, 30, 1]) / 28
+        x = tf.reshape(x, [-1, h, 2 * (1 + w // 2), 1]) / tf.sqrt(h * w)
     else:
-        x = tf.reshape(x, [-1, 28, 28, 1])
+        x = tf.reshape(x, [-1, h, w, 1])
 
     for k in range(3):
         x = layers.Conv2D(2**k * 64, kernel_size=3, strides=2, use_bias=False, padding='same')(x)
