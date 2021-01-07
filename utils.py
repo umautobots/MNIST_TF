@@ -2,10 +2,10 @@ import tensorflow as tf
 from tensorflow.keras import Model, layers
 
 
-def build_model():
-    _in = layers.Input(shape=(28, 28))
+def build_model(h=28, w=28):
+    _in = layers.Input(shape=(h, w))
     x = 0.5 * (_in - 127.5)
-    x = layers.Reshape((28, 28, 1))(x)
+    x = layers.Reshape((h, w, 1))(x)
     for k in range(3):
         x = layers.Conv2D(2**k * 64, kernel_size=3, strides=2, use_bias=False, padding='same')(x)
         x = layers.BatchNormalization(scale=False)(x)

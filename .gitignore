@@ -4,3 +4,4 @@ data/
 logs/
 .idea/
 .vscode/
+.fake_home/
